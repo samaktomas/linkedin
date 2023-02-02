@@ -18,8 +18,12 @@ import {
   query,
   orderBy,
 } from "firebase/firestore";
+import { useSelector } from "react-redux";
+import { selectUser } from "../features/userSlice";
+import FlipMove from "react-flip-move";
 
 export default function Feed() {
+  const user = useSelector(selectUser);
   const [posts, setPosts] = useState([]);
   const [input, setInput] = useState("");
 
@@ -43,10 +47,10 @@ export default function Feed() {
     e.preventDefault();
 
     await addDoc(collection(db, "posts"), {
-      name: "Tom Samak",
-      description: "This sis a test",
+      name: user.displayName,
+      description: user.email,
       message: input,
-      photoUrl: "",
+      photoUrl: user.photoUrl || "",
       timestamp: serverTimestamp(),
     });
     setInput("");
@@ -81,15 +85,17 @@ export default function Feed() {
         </div>
       </div>
 
-      {posts.map(({ id, data: { name, description, message, photoUrl } }) => (
-        <Post
-          key={id}
-          name={name}
-          description={description}
-          message={message}
-          photoUrl={photoUrl}
-        />
-      ))}
+      <FlipMove>
+        {posts.map(({ id, data: { name, description, message, photoUrl } }) => (
+          <Post
+            key={id}
+            name={name}
+            description={description}
+            message={message}
+            photoUrl={photoUrl}
+          />
+        ))}
+      </FlipMove>
     </div>
   );
 }

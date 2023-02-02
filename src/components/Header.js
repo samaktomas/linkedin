@@ -9,8 +9,18 @@ import {
   Notifications,
   SupervisorAccount,
 } from "@mui/icons-material";
+import { useDispatch } from "react-redux";
+import { logout } from "../features/userSlice";
+import { getAuth, signOut } from "firebase/auth";
 
 export default function Header() {
+  const dispatch = useDispatch();
+  const logoutOfAp = () => {
+    dispatch(logout());
+    const auth = getAuth();
+    signOut(auth);
+  };
+
   return (
     <div className="header">
       <div className="header__left">
@@ -20,7 +30,7 @@ export default function Header() {
         />
         <div className="header__search">
           <SearchIcon />
-          <input type="text" />
+          <input placeholder="Search" type="text" />
         </div>
       </div>
 
@@ -30,10 +40,7 @@ export default function Header() {
         <HeaderOption Icon={BusinessCenter} title="Jobs" />
         <HeaderOption Icon={Chat} title="Messaging" />
         <HeaderOption Icon={Notifications} title="Notifications" />
-        <HeaderOption
-          avatar="https://compassionate-leakey-e9b16b.netlify.app/images/IG_Sonny.jpeg"
-          title="me"
-        />
+        <HeaderOption avatar={true} title="me" onClick={logoutOfAp} />
       </div>
     </div>
   );
